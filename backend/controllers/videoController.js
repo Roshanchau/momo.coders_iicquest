@@ -87,9 +87,6 @@ const deleteVideo = async (req, res) => {
   }
 
   //  Get videos By user id
-  // get videos by user id
-
-
 };
 const getVideosByUserId = async (req, res) => {
   try {
@@ -98,13 +95,19 @@ const getVideosByUserId = async (req, res) => {
     // get unique category ids from posts for the user
     const userPosts = await prisma.post.findMany({
       where: { userId: userId },
-      select: { categoryId: true }
+      select: { categoryId: true },
     });
 
-    const uniqueCategoryIds = [...new Set(userPosts.filter(post => post.categoryId !== null).map(post => post.categoryId.toString()))];
+    const uniqueCategoryIds = [
+      ...new Set(
+        userPosts
+          .filter((post) => post.categoryId !== null)
+          .map((post) => post.categoryId.toString())
+      ),
+    ];
     // fetch videos according to the category ids
     const videos = await prisma.video.findMany({
-      where: { categoryId: { in: uniqueCategoryIds } }
+      where: { categoryId: { in: uniqueCategoryIds } },
     });
     console.log(videos);
 
